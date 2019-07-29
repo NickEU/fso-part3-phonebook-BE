@@ -1,0 +1,6 @@
+post  http://localhost:3002/api/persons
+Content-Type: application/json
+
+{
+    "number": "911-31-337"
+}
