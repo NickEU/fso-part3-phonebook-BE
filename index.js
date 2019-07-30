@@ -74,7 +74,7 @@ app.post("/api/persons", (req, res) => {
   };
   console.log(entry);
   entries.push(entry);
-  res.send(`New entry was added to the phonebook`);
+  res.send(`new entry was added to the phonebook`);
 });
 
 const generateNewId = () => {
@@ -97,7 +97,7 @@ app.get("/api/persons/:id", (req, res) => {
   if (result) {
     res.send(result);
   } else {
-    res.status(404).send(`Entry with id ${id} was not found!`);
+    res.status(404).send(`entry with id ${id} was not found!`);
   }
 });
 
@@ -111,10 +111,10 @@ app.delete("/api/persons/:id", (req, res) => {
   const newEntries = entries.filter(entry => entry.id !== id);
   console.log(entries.length, newEntries.length);
   if (entries.length === newEntries.length) {
-    res.status(404).send(`No element with id ${id} was found.`);
+    res.status(404).send(`no element with id ${id} was found.`);
   } else {
     entries = newEntries;
-    res.send(`Delete request for id ${id} was successful`);
+    res.send(`delete request for id ${id} was successful`);
   }
 });
 
