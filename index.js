@@ -1,7 +1,30 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const cors = require("cors");
+
+app.use(cors());
 app.use(bodyParser.json());
+
+morgan.token("post-body", function(req, res) {
+  return JSON.stringify(req.body);
+});
+
+app.use(
+  morgan(function(tokens, req, res) {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      tokens["post-body"](req, res)
+    ].join(" ");
+  })
+);
 
 let entries = [
   {
@@ -55,9 +78,8 @@ app.post("/api/persons", (req, res) => {
 
 const generateNewId = () => {
   let currentIds = entries.map(entry => entry.id);
-  let id;
   do {
-    id = Math.floor(Math.random() * 100) + 1;
+    var id = Math.floor(Math.random() * 1000) + 1;
     console.log(id);
   } while (currentIds.indexOf(id) !== -1);
 
@@ -95,7 +117,13 @@ app.delete("/api/persons/:id", (req, res) => {
   }
 });
 
-const PORT = 3002;
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+
+const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
