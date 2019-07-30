@@ -9,7 +9,7 @@
     "watch": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../fso-part3-phonebook-FE && npm run build --prod && cp -r build ../fso-part3-phonebook-BE/",
     "deploy": "git push heroku master",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && echo 'deploying stuff: ' && npm run deploy",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
     "logs:prod": "heroku logs --tail"
   },
   "author": "",
