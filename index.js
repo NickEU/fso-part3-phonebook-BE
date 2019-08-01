@@ -29,14 +29,14 @@ app.use(
   })
 );
 
-app.post("/api/people", (req, res) => {
+app.post("/api/people", (req, res, next) => {
   const body = req.body;
 
-  if (!body || !body.name || !body.number) {
-    return res.status(400).send({
-      error: `name or number missing`
-    });
-  }
+  // if (!body || !body.name || !body.number) {
+  //   return res.status(400).send({
+  //     error: `name or number missing`
+  //   });
+  // }
 
   const entry = new Entry({
     name: body.name,
@@ -51,7 +51,7 @@ app.post("/api/people", (req, res) => {
     .catch(error => next(error));
 });
 
-app.put("/api/people/:id", (req, res) => {
+app.put("/api/people/:id", (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
 
@@ -66,14 +66,18 @@ app.put("/api/people/:id", (req, res) => {
     number: body.number
   };
 
-  Entry.findByIdAndUpdate(id, updatedEntry, { new: true })
+  Entry.findByIdAndUpdate(id, updatedEntry, {
+    new: true,
+    runValidators: true,
+    context: "query"
+  })
     .then(savedEntry => {
       res.json(savedEntry.toJSON());
     })
     .catch(error => next(error));
 });
 
-app.get("/api/info", (req, res) => {
+app.get("/api/info", (req, res, next) => {
   Entry.find({})
     .then(entries => {
       console.log(entries);
@@ -85,7 +89,7 @@ app.get("/api/info", (req, res) => {
     .catch(error => next(error));
 });
 
-app.get("/api/people", (req, res) => {
+app.get("/api/people", (req, res, next) => {
   Entry.find({})
     .then(entries => {
       console.log(entries);
@@ -94,7 +98,7 @@ app.get("/api/people", (req, res) => {
     .catch(error => next(error));
 });
 
-app.get("/api/people/:id", (req, res) => {
+app.get("/api/people/:id", (req, res, next) => {
   Entry.findById(req.params.id)
     .then(result => {
       console.log(result);
@@ -212,10 +216,14 @@ const unknownEndpoint = (req, res) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
-
+  console.error(error);
+  //console.error(error.codeName);
   if (error.name === "CastError" && error.kind == "ObjectId") {
     return res.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return res.status(400).json({ error: error.message });
+  } else if (error.codeName === "DuplicateKey") {
+    return res.status(400).json({ error: error.message });
   }
 
   next(error);

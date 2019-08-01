@@ -1,11 +1,15 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
-
+const uniqueValidator = require("mongoose-unique-validator");
 const url = process.env.MONGODB_URL;
 console.log("Connecting to the database: ", url);
 
 mongoose
-  .connect(url, { useNewUrlParser: true })
+  .connect(url, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+  })
   .then(result => {
     console.log("connected to MongoDB");
   })
@@ -14,9 +18,11 @@ mongoose
   });
 
 const entrySchema = new mongoose.Schema({
-  name: String,
-  number: String
+  name: { type: String, required: true, unique: true },
+  number: { type: String, required: true }
 });
+
+entrySchema.plugin(uniqueValidator);
 
 entrySchema.set("toJSON", {
   transform: (document, returnedObject) => {
