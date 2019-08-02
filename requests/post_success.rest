@@ -1,7 +1,0 @@
-post  https://intense-castle-88618.herokuapp.com/api/persons
-Content-Type: application/json
-
-{
-    "name": "John Cassidy",
-    "number": "911-31-337"
-}

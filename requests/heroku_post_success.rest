@@ -1,0 +1,7 @@
+post  https://intense-castle-88618.herokuapp.com/api/people
+Content-Type: application/json
+
+{
+    "name": "Omar Little",
+    "number": "911-31-337"
+}

@@ -10,7 +10,7 @@ app.use(express.static("build"));
 app.use(cors());
 app.use(bodyParser.json());
 
-morgan.token("post-body", function(req, res) {
+morgan.token("post-body", function(req) {
   return JSON.stringify(req.body);
 });
 
@@ -31,12 +31,6 @@ app.use(
 
 app.post("/api/people", (req, res, next) => {
   const body = req.body;
-
-  // if (!body || !body.name || !body.number) {
-  //   return res.status(400).send({
-  //     error: `name or number missing`
-  //   });
-  // }
 
   const entry = new Entry({
     name: body.name,
@@ -118,8 +112,7 @@ app.use(unknownEndpoint);
 
 const errorHandler = (error, req, res, next) => {
   console.error(error.message);
-  //console.error(error.codeName);
-  if (error.name === "CastError" && error.kind == "ObjectId") {
+  if (error.name === "CastError" && error.kind === "ObjectId") {
     return res.status(400).send({ error: "malformatted id" });
   } else if (error.name === "ValidationError") {
     return res.status(400).json({ error: error.message });

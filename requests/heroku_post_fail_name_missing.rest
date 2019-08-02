@@ -1,4 +1,4 @@
-post  https://intense-castle-88618.herokuapp.com/api/persons
+post  https://intense-castle-88618.herokuapp.com/api/people
 Content-Type: application/json
 
 {
