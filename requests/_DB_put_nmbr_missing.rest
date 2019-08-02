@@ -1,0 +1,6 @@
+put http://localhost:3005/api/people/5d415208607f741124af8163
+Content-Type: application/json
+
+{
+    "name": "Anna Belle"
+}
